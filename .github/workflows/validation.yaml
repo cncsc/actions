@@ -12,6 +12,16 @@ on:
         required: false
         type: boolean
         default: true
+      runUnitTests:
+        description: Whether or not to run the unit tests from the project's package.json file.
+        required: false
+        type: boolean
+        default: false
+      runE2eTests:
+        description: Whether or not to run the e2e tests from the project's package.json file.
+        required: false
+        type: boolean
+        default: false
       additionalHomebrewPackages:
         description: A space-delimited list of Homebrew packages to install.
         required: false
@@ -93,4 +103,31 @@ jobs:
 
       - name: Run lint script
         run: npm run lint
+        shell: bash
+
+  run-tests:
+    name: Run optional tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ secrets.GIT_TOKEN_BASIC || github.token }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+
+      - name: Install node dependencies
+        run: npm ci
+        shell: bash
+
+      - name: Run unit tests
+        if: inputs.runUnitTests == true
+        run: npm run test
+        shell: bash
+
+      - name: Run e2e tests
+        if: inputs.runE2eTests == true
+        run: npm run e2e
         shell: bash
