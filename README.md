@@ -9,6 +9,9 @@ Runs on `ubuntu` and `macos`.
 ### Validation Workflow
 
 Runs `pre-commit` validation and executes the projects `lint` script from `package.json`.
+This below example also runs `npm run test` and `npm run e2e`.
+
+`npmTestScripts` is a space delimited string.
 
 ```yaml
 jobs:
@@ -19,6 +22,7 @@ jobs:
       runPreCommit: true # optional
       runDefaultLinters: true # optional
       additionalHomebrewPackages: tflint tfsec # optional
+      npmTestScripts: test e2e # optional
 ```
 
 ### Semantic Release Workflow
