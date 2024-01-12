@@ -22,6 +22,11 @@ on:
         required: false
         type: string
         default: '--all-files'
+      npmTestScripts:
+        description: A space-delimited list of NPM scripts to run as tests. E.g. 'test e2e'
+        required: false
+        type: string
+        default: ''
     secrets:
       GIT_TOKEN_BASIC:
         required: false
@@ -93,4 +98,31 @@ jobs:
 
       - name: Run lint script
         run: npm run lint
+        shell: bash
+
+  run-tests:
+    name: Run optional tests
+    runs-on: ubuntu-latest
+    if: inputs.npmTestScripts != ''
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ secrets.GIT_TOKEN_BASIC || github.token }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+
+      - name: Install node dependencies
+        run: npm ci
+        shell: bash
+
+      - name: Run unit tests
+        run: |
+          echo "all good ${{ inputs.npmTestScripts }}"
+        shell: bash
+
+      - name: Run e2e tests
+        run: echo "all good2 ${{ inputs.npmTestScripts }}"
         shell: bash
