@@ -118,11 +118,12 @@ jobs:
         run: npm ci
         shell: bash
 
-      - name: Run unit tests
+      - name: Run all tests
         run: |
-          echo "all good ${{ inputs.npmTestScripts }}"
-        shell: bash
-
-      - name: Run e2e tests
-        run: echo "all good2 ${{ inputs.npmTestScripts }}"
+          echo
+          echo "We will run these tests: ${{ inputs.npmTestScripts }}"
+          echo
+          for script_name in ${{ inputs.npmTestScripts }}; do
+            npm run "$script_name"
+          done
         shell: bash
